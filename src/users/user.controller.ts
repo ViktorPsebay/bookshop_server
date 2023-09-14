@@ -10,8 +10,10 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 
-import { UserService } from '../services/user.service';
-import { AuthUserDto, CreateUserDto } from 'src/dto/user.dto';
+import { UserService } from './user.service';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { User } from './decorators/user.decorator';
+import { IUser } from './interfaces/user.interface';
 
 @Controller('users')
 export class UserController {
@@ -33,17 +35,20 @@ export class UserController {
   }
 
   @Patch(':id')
-  updateUser(@Param('id') id: string, @Res() res: Response) {
-    return this.userService.updateUser(id, res);
+  updateUser(
+    @Param('id') id: string,
+    @Body() body: UpdateUserDto,
+    @Res() res: Response,
+  ) {
+    return this.userService.updateUser(id, body, res);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string, @Res() res: Response) {
-    return this.userService.deleteUser(id, res);
-  }
-
-  @Post('login')
-  authUser(@Body() body: AuthUserDto, @Res() res: Response) {
-    return this.userService.authorization(body, res);
+  deleteUser(
+    @Param('id') id: string,
+    @User() user: IUser,
+    @Res() res: Response,
+  ) {
+    return this.userService.deleteUser(id, user, res);
   }
 }
