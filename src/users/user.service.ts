@@ -5,8 +5,7 @@ import { Response } from 'express';
 import { user } from './models/user.model';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { IUser } from './interfaces/user.interface';
-
-const salt = 'salt';
+import { salt } from './utils/consts';
 
 @Injectable()
 export class UserService {
@@ -110,8 +109,8 @@ export class UserService {
     return res.status(200).json({ message: 'Пользователь был удален' });
   }
 
-  async registration(req, res: Response) {
-    const { fullName, email, password, birthday } = req.body;
+  async registration(req: CreateUserDto, res: Response) {
+    const { fullName, email, password, birthday } = req;
     const emailNormalize = email.toLowerCase();
     const candidate = await user.findOne({
       where: { email: emailNormalize },
